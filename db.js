@@ -1,4 +1,5 @@
 const pg = require('pg');
+const { hash, compare } = require('bcrypt');
 
 const config = {
     user: 'postgres',
@@ -26,9 +27,33 @@ function queryDB(sql, cb) {
 module.exports = queryDB;
 
 const signUp = (email, password, name, address, phone, cb) => {
-    const sql = `INSERT INTO public."User"(email, password, name, phone, address)
-	VALUES ('S${email}', '${password}', '${name}', '${phone}', '${address}');`
-    queryDB(sql, (err, result) => {
-        
+    hash(password, 8, (err, encypted) => {
+        if (err) return cb(err);
+        const sql = `INSERT INTO public."User"(email, password, name, phone, address)
+        VALUES ('S${email}', '${encypted}', '${name}', '${phone}', '${address}');`
+        queryDB(sql, (err, result) => {
+            if (err) return cb(err);
+            cb();
+        });
     });
 };
+
+const signIn = (email, password, cb) => {
+    const sql = `SELECT password FROM "User" WHERE email = '${email}'`;
+    queryDB(sql, (err, result) => {
+        if (err) return cb(err);
+        if (result.rows.length === 0) return cb(new Error('Email khong ton tai!'));
+        const encypted = result.rows[0].password;
+        compare(password, encypted, (err, same) => {
+            if (err) return cb(err);
+            if (!same) return cb(new Error('Sai password'));
+            cb();
+        });
+    });
+};
+
+// signUp('asssdafdfs@gmail.com', '123', 'Pho', '92 LTR', '012348217', err => {
+//     console.log(err);
+// });
+
+signIn('Sasssdafdfs@gmail.com', '123', err => console.log(err));
