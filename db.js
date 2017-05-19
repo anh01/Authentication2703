@@ -24,3 +24,11 @@ function queryDB(sql, cb) {
 }
 
 module.exports = queryDB;
+
+const signUp = (email, password, name, address, phone, cb) => {
+    const sql = `INSERT INTO public."User"(email, password, name, phone, address)
+	VALUES ('S${email}', '${password}', '${name}', '${phone}', '${address}');`
+    queryDB(sql, (err, result) => {
+        
+    });
+};
