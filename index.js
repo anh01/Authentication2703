@@ -16,6 +16,7 @@ app.post('/dangky', jsonParser, (req, res) => {
 
 app.post('/dangnhap', jsonParser, (req, res) => {
     const { password, email } = req.body;
+    console.log(req.body);
     signIn(email, password, err => {
         if (err) return res.send('THAT_BAI');
         res.send('THANH_CONG');
