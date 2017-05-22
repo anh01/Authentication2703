@@ -24,13 +24,11 @@ function queryDB(sql, cb) {
     });
 }
 
-module.exports = queryDB;
-
 const signUp = (email, password, name, address, phone, cb) => {
     hash(password, 8, (err, encypted) => {
         if (err) return cb(err);
         const sql = `INSERT INTO public."User"(email, password, name, phone, address)
-        VALUES ('S${email}', '${encypted}', '${name}', '${phone}', '${address}');`
+        VALUES ('${email}', '${encypted}', '${name}', '${phone}', '${address}');`
         queryDB(sql, (err, result) => {
             if (err) return cb(err);
             cb();
@@ -52,8 +50,10 @@ const signIn = (email, password, cb) => {
     });
 };
 
+module.exports = { signIn, signUp };
+
 // signUp('asssdafdfs@gmail.com', '123', 'Pho', '92 LTR', '012348217', err => {
 //     console.log(err);
 // });
 
-signIn('Sasssdafdfs@gmail.com', '123', err => console.log(err));
+// signIn('Sasssdafdfs@gmail.com', '123', err => console.log(err));
