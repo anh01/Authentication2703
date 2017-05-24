@@ -1,6 +1,7 @@
 const express = require('express');
 const jsonParser = require('body-parser').json();
 const { signIn, signUp } = require('./db');
+const { getEmailFromToken, getTokenFromEmail } = require('./jwt');
 
 const app = express();
 
@@ -16,10 +17,11 @@ app.post('/dangky', jsonParser, (req, res) => {
 
 app.post('/dangnhap', jsonParser, (req, res) => {
     const { password, email } = req.body;
-    console.log(req.body);
     signIn(email, password, err => {
         if (err) return res.send('THAT_BAI');
-        res.send('THANH_CONG');
+        getTokenFromEmail(email, (err, token) => {
+            res.send(token);
+        });
     });
 });
 
