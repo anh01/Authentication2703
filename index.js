@@ -17,11 +17,19 @@ app.post('/dangky', jsonParser, (req, res) => {
 
 app.post('/dangnhap', jsonParser, (req, res) => {
     const { password, email } = req.body;
-    signIn(email, password, err => {
-        if (err) return res.send('THAT_BAI');
+    signIn(email, password, (err, user) => {
+        if (err) return res.send({ error: 'LOI DANG NHAP' });
         getTokenFromEmail(email, (err, token) => {
-            res.send(token);
+            res.send({ token, user });
         });
+    });
+});
+
+app.post('/check', jsonParser, (req, res) => {
+    const { token } = req.body;
+    getEmailFromToken(token, (err, email) => {
+        if (err) return res.send('THAT_BAI');
+        res.send('THANH_CONG');
     });
 });
 

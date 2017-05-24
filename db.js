@@ -37,7 +37,7 @@ const signUp = (email, password, name, address, phone, cb) => {
 };
 
 const signIn = (email, password, cb) => {
-    const sql = `SELECT password FROM "User" WHERE email = '${email}'`;
+    const sql = `SELECT * FROM "User" WHERE email = '${email}'`;
     queryDB(sql, (err, result) => {
         if (err) return cb(err);
         if (result.rows.length === 0) return cb(new Error('Email khong ton tai!'));
@@ -45,7 +45,8 @@ const signIn = (email, password, cb) => {
         compare(password, encypted, (err, same) => {
             if (err) return cb(err);
             if (!same) return cb(new Error('Sai password'));
-            cb();
+            const { email, phone, address, name } = result.rows[0]; 
+            cb(undefined, { email, phone, address, name });
         });
     });
 };
