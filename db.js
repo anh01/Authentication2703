@@ -51,7 +51,16 @@ const signIn = (email, password, cb) => {
     });
 };
 
-module.exports = { signIn, signUp };
+const getUserInfo = (email, cb) => {
+    const sql = `SELECT * FROM "User" WHERE email = '${email}'`;
+    queryDB(sql, (err, result) => {
+        if (err) return cb(err);
+        const { email, address, phone, name } = result.rows[0]
+        cb(undefined, { email, address, phone, name });
+    });
+};
+
+module.exports = { signIn, signUp, getUserInfo };
 
 // signUp('asssdafdfs@gmail.com', '123', 'Pho', '92 LTR', '012348217', err => {
 //     console.log(err);

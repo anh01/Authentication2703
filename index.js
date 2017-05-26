@@ -1,6 +1,6 @@
 const express = require('express');
 const jsonParser = require('body-parser').json();
-const { signIn, signUp } = require('./db');
+const { signIn, signUp, getUserInfo } = require('./db');
 const { getEmailFromToken, getTokenFromEmail } = require('./jwt');
 
 const app = express();
@@ -28,8 +28,11 @@ app.post('/dangnhap', jsonParser, (req, res) => {
 app.post('/check', jsonParser, (req, res) => {
     const { token } = req.body;
     getEmailFromToken(token, (err, email) => {
-        if (err) return res.send('THAT_BAI');
-        res.send('THANH_CONG');
+        if (err) return res.send({ error: 'LOI Token' });
+        getUserInfo(email, (err, user) => {
+            if (err) return res.send({ error: 'LOI email' });
+            res.send(user);
+        });
     });
 });
 
